@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NotSoBlueSky</string>
+    <string name="notRain">It appears to not be raining outside.</string>
+    <string name="rain">Stay indoors. It appears to be raining.</string>
+    <string name="itsRaining">It\'s raining</string>
+    <string name="itsNotRaining">It\'s not raining</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

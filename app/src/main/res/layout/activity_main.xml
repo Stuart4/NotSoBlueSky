@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:text="@string/notRain"
+        android:textSize="50sp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:id="@+id/statusBlurb"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/itsRaining"
+            android:textSize="15sp"
+            android:drawableRight="@drawable/affirmativeGray"
+            android:id="@+id/affirmativeButton" android:layout_alignParentBottom="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/itsNotRaining"
+            android:textSize="15sp"
+            android:drawableRight="@drawable/negativeBlue"
+            android:id="@+id/negativeButton"
+            android:layout_alignParentBottom="true" android:layout_alignRight="@+id/statusBlurb"
+            android:layout_alignEnd="@+id/statusBlurb"/>
+
+</RelativeLayout>
