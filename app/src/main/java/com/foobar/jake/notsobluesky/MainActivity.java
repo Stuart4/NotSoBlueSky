@@ -1,6 +1,7 @@
 package com.foobar.jake.notsobluesky;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Random;
 
 
 public class MainActivity extends Activity {
@@ -34,10 +37,21 @@ public class MainActivity extends Activity {
 
 		//Update interface
 
-		
+		if (rain) {
+			contentBlurb.setText(getString(R.string.rain));
+			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativegray, 0);
+			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativeblue, 0);
+			setForRain = true;
+		} else {
+			contentBlurb.setText(getString(R.string.notRain));
+			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativeblue, 0);
+			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativegray, 0);
+			setForRain = false;
+		}
 	}
 	public void affirmativeButtonClicked(View view) {
 		Toast.makeText(this, "Response received", Toast.LENGTH_SHORT).show();
+		updateRainStatus();
 	}
 
 	public void negativeButtonClicked(View view) {
@@ -45,6 +59,10 @@ public class MainActivity extends Activity {
 	}
 
 	private boolean rainStatus() {
+		Random rnd = new Random();
+		int res = rnd.nextInt(2);
+		if (res == 1)
+			return true;
 		return false;
 	}
 
