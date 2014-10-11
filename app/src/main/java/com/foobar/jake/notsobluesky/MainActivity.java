@@ -4,15 +4,49 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
+	private boolean setForRain = false;
+	private TextView contentBlurb;
+	private Button affirmativeButton;
+	private Button negativeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+	contentBlurb = (TextView) findViewById(R.id.statusBlurb);
+    	affirmativeButton = (Button) findViewById(R.id.affirmativeButton);
+	negativeButton = (Button) findViewById(R.id.negativeButton);
     }
+
+	public void updateRainStatus() {
+		boolean rain = rainStatus();
+		//GO HOME!!!
+		if (setForRain == rain) {
+			return;
+		}
+
+		//Update interface
+
+		
+	}
+	public void affirmativeButtonClicked(View view) {
+		Toast.makeText(this, "Response received", Toast.LENGTH_SHORT).show();
+	}
+
+	public void negativeButtonClicked(View view) {
+		Toast.makeText(this, "Response received", Toast.LENGTH_SHORT).show();
+	}
+
+	private boolean rainStatus() {
+		return false;
+	}
 
 
     @Override
