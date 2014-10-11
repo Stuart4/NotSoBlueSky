@@ -12,10 +12,12 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/imageView"
-            android:src="@drawable/suncloud" android:scaleType="fitXY" android:cropToPadding="false"
+            android:src="@drawable/suncloud"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:contentDescription="Sun and Dark Cloud"
-            android:layout_centerVertical="true" android:layout_centerHorizontal="true"/>
+            android:layout_centerVertical="true" android:layout_centerHorizontal="true" />
     <TextView
         android:text="@string/notRain"
         android:textSize="50sp"

@@ -57,9 +57,9 @@ public class MainActivity extends Activity {
 
 	private void showRainPicture(boolean isRain) {
 		if (isRain) {
-			image.setBackgroundResource(R.drawable.raincloud);
+			image.setImageResource(R.drawable.raincloud);
 		} else {
-			image.setBackgroundResource(R.drawable.suncloud);
+			image.setImageResource(R.drawable.suncloud);
 		}
 	}
 
