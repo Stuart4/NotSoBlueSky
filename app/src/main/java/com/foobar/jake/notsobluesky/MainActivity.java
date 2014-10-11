@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
 	private boolean setForRain = false;
 	private TextView contentBlurb;
+	private ImageView image;
 	private Button affirmativeButton;
 	private Button negativeButton;
 
@@ -26,6 +28,7 @@ public class MainActivity extends Activity {
 	contentBlurb = (TextView) findViewById(R.id.statusBlurb);
     	affirmativeButton = (Button) findViewById(R.id.affirmativeButton);
 	negativeButton = (Button) findViewById(R.id.negativeButton);
+	image = (ImageView) findViewById(R.id.imageView);
     }
 
 	public void updateRainStatus() {
@@ -41,14 +44,25 @@ public class MainActivity extends Activity {
 			contentBlurb.setText(getString(R.string.rain));
 			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativegray, 0);
 			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativeblue, 0);
+			showRainPicture(true);
 			setForRain = true;
 		} else {
 			contentBlurb.setText(getString(R.string.notRain));
-			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativeblue, 0);
-			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativegray, 0);
+			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativegray, 0);
+			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativeblue, 0);
+			showRainPicture(false);
 			setForRain = false;
 		}
 	}
+
+	private void showRainPicture(boolean isRain) {
+		if (isRain) {
+			image.setBackgroundResource(R.drawable.raincloud);
+		} else {
+			image.setBackgroundResource(R.drawable.suncloud);
+		}
+	}
+
 	public void affirmativeButtonClicked(View view) {
 		Toast.makeText(this, "Response received", Toast.LENGTH_SHORT).show();
 		updateRainStatus();
