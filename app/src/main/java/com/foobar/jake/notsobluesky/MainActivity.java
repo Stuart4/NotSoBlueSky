@@ -1,7 +1,12 @@
 package com.foobar.jake.notsobluesky;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 
@@ -31,7 +38,7 @@ public class MainActivity extends Activity {
 	image = (ImageView) findViewById(R.id.imageView);
     }
 
-	public void updateRainStatus() {
+	public void updateRainStatus() throws IOException{
 		boolean rain = rainStatus();
 		//GO HOME!!!
 		if (setForRain == rain) {
@@ -63,16 +70,25 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void affirmativeButtonClicked(View view) {
-		Toast.makeText(this, "Response received", Toast.LENGTH_SHORT).show();
+	public void affirmativeButtonClicked(View view) throws IOException{
 		updateRainStatus();
 	}
 
-	public void negativeButtonClicked(View view) {
-		Toast.makeText(this, "Response received", Toast.LENGTH_SHORT).show();
+	public void negativeButtonClicked(View view) throws IOException{
+		updateRainStatus();
 	}
 
-	private boolean rainStatus() {
+	private boolean rainStatus() throws IOException{
+		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Location loc = lm.getLastKnownLocation(lm.getBestProvider(new android.location.Criteria() ,false));
+		double latitude = loc.getLatitude();
+		double longitude = loc.getLongitude();
+		java.util.Locale locale = new java.util.Locale(String.valueOf(latitude), String.valueOf(longitude));
+		Geocoder geo = new Geocoder(this);
+		List<Address> addressesList = geo.getFromLocation(latitude, longitude, 1);
+		String city =  addressesList.get(0).getLocality();
+		Toast.makeText(this, city, Toast.LENGTH_SHORT).show();
+
 		Random rnd = new Random();
 		int res = rnd.nextInt(2);
 		if (res == 1)
