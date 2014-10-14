@@ -83,10 +83,6 @@ public class MainActivity extends Activity {
 		Location loc = lm.getLastKnownLocation(lm.getBestProvider(new android.location.Criteria() ,false));
 		double latitude = loc.getLatitude();
 		double longitude = loc.getLongitude();
-		java.util.Locale locale = new java.util.Locale(String.valueOf(latitude), String.valueOf(longitude));
-		Geocoder geo = new Geocoder(this);
-		List<Address> addressesList = geo.getFromLocation(latitude, longitude, 1);
-		String city =  addressesList.get(0).getLocality();
 		Toast.makeText(this, city, Toast.LENGTH_SHORT).show();
 
 		Random rnd = new Random();
