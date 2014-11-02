@@ -25,16 +25,17 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 
 
 public class MainActivity extends Activity {
-	private boolean setForRain = false;
-	private TextView contentBlurb;
-	private ImageView image;
-	private Button affirmativeButton;
-	private Button negativeButton;
+    private boolean setForRain = false;
+    private TextView contentBlurb;
+    private ImageView image;
+    private Button affirmativeButton;
+    private Button negativeButton;
     private String apikey;
     private URL apiString;
 
@@ -42,73 +43,60 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-	contentBlurb = (TextView) findViewById(R.id.statusBlurb);
-    	affirmativeButton = (Button) findViewById(R.id.affirmativeButton);
-	negativeButton = (Button) findViewById(R.id.negativeButton);
-	image = (ImageView) findViewById(R.id.imageView);
-    apikey = getString(R.string.forecastapi);
-    Toast.makeText(this,apikey, Toast.LENGTH_SHORT).show();
+        contentBlurb = (TextView) findViewById(R.id.statusBlurb);
+        affirmativeButton = (Button) findViewById(R.id.affirmativeButton);
+        negativeButton = (Button) findViewById(R.id.negativeButton);
+        image = (ImageView) findViewById(R.id.imageView);
+        apikey = getString(R.string.forecastapi);
     }
 
-	public void updateRainStatus() throws IOException{
-		boolean rain = rainStatus();
-		//GO HOME!!!
-		if (setForRain == rain) {
-			return;
-		}
-
-		//Update interface
-
-		if (rain) {
-			contentBlurb.setText(getString(R.string.rain));
-			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativegray, 0);
-			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativeblue, 0);
-			showRainPicture(true);
-			setForRain = true;
-		} else {
-			contentBlurb.setText(getString(R.string.notRain));
-			affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativegray, 0);
-			negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativeblue, 0);
-			showRainPicture(false);
-			setForRain = false;
-		}
-	}
-
-	private void showRainPicture(boolean isRain) {
-		if (isRain) {
-			image.setImageResource(R.drawable.raincloud);
-		} else {
-			image.setImageResource(R.drawable.suncloud);
-		}
-	}
-
-	public void affirmativeButtonClicked(View view) throws IOException{
-		updateRainStatus();
-	}
-
-	public void negativeButtonClicked(View view) throws IOException{
-		updateRainStatus();
-	}
-
-	private boolean rainStatus() throws IOException{
-		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Location loc = lm.getLastKnownLocation(lm.getBestProvider(new android.location.Criteria() ,false));
-		double latitude = loc.getLatitude();
-		double longitude = loc.getLongitude();
-        setApiString(latitude, longitude);
-		Toast.makeText(this, latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
-
-        try {
-            String s = new JsonGetter().execute(apiString).get();
-            Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+    public void updateRainStatus(boolean rain) {
+        //GO HOME!!!
+        if (setForRain == rain) {
+            return;
         }
 
-        return false;
-	}
+        //Update interface
+
+        if (rain) {
+            contentBlurb.setText(getString(R.string.rain));
+            affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativegray, 0);
+            negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativeblue, 0);
+            showRainPicture(true);
+            setForRain = true;
+        } else {
+            contentBlurb.setText(getString(R.string.notRain));
+            affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativegray, 0);
+            negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativeblue, 0);
+            showRainPicture(false);
+            setForRain = false;
+        }
+    }
+
+    private void showRainPicture(boolean isRain) {
+        if (isRain) {
+            image.setImageResource(R.drawable.raincloud);
+        } else {
+            image.setImageResource(R.drawable.suncloud);
+        }
+    }
+
+    public void affirmativeButtonClicked(View view) throws IOException {
+        runRainStatus();
+    }
+
+    public void negativeButtonClicked(View view) throws IOException {
+        runRainStatus();
+    }
+
+    private void runRainStatus() throws IOException {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location loc = lm.getLastKnownLocation(lm.getBestProvider(new android.location.Criteria(), false));
+        double latitude = loc.getLatitude();
+        double longitude = loc.getLongitude();
+        setApiString(latitude, longitude);
+        new JsonGetter(this).execute(apiString);
+    }
 
 
     @Override
@@ -140,9 +128,15 @@ public class MainActivity extends Activity {
     }
 }
 
-class JsonGetter extends AsyncTask<URL, Void, String>{
+class JsonGetter extends AsyncTask<URL, Void, Double>{
+
+    private MainActivity activity;
+
+    public JsonGetter(MainActivity activity) {
+        this.activity = activity;
+    }
     @Override
-    protected String doInBackground(URL... url) {
+    protected Double doInBackground(URL... url) {
         StringBuilder sb = new StringBuilder();
         try {
             InputStream is = url[0].openStream();
@@ -154,6 +148,31 @@ class JsonGetter extends AsyncTask<URL, Void, String>{
             is.close();
         } catch (IOException e) {
         }
-        return sb.toString();
+        return getPrecipProb(sb.toString());
+    }
+
+    private double getPrecipProb(String s) {
+        double precipProb = -1.0;
+        try {
+            JSONObject obj = new JSONObject(s);
+            obj = obj.getJSONObject("minutely");
+            JSONArray data = obj.getJSONArray("data");
+            obj = data.getJSONObject(5);
+            precipProb = obj.getDouble("precipProbability");
+        } catch (JSONException e) {
+        }
+        return precipProb;
+    }
+
+    @Override
+    protected void onPostExecute(Double d) {
+        super.onPostExecute(d);
+        boolean rain = false;
+        Toast.makeText(activity, d.toString(), Toast.LENGTH_LONG).show();
+        if (d > 0.9) {
+            rain = true;
+        }
+        activity.updateRainStatus(rain);
+
     }
 }
