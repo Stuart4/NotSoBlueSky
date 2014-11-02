@@ -34,8 +34,6 @@ public class MainActivity extends Activity {
     private boolean setForRain = false;
     private TextView contentBlurb;
     private ImageView image;
-    private Button affirmativeButton;
-    private Button negativeButton;
     private String apikey;
     private URL apiString;
 
@@ -44,8 +42,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         contentBlurb = (TextView) findViewById(R.id.statusBlurb);
-        affirmativeButton = (Button) findViewById(R.id.affirmativeButton);
-        negativeButton = (Button) findViewById(R.id.negativeButton);
         image = (ImageView) findViewById(R.id.imageView);
         apikey = getString(R.string.forecastapi);
     }
@@ -60,14 +56,10 @@ public class MainActivity extends Activity {
 
         if (rain) {
             contentBlurb.setText(getString(R.string.rain));
-            affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativegray, 0);
-            negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativeblue, 0);
             showRainPicture(true);
             setForRain = true;
         } else {
             contentBlurb.setText(getString(R.string.notRain));
-            affirmativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.negativegray, 0);
-            negativeButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.affirmativeblue, 0);
             showRainPicture(false);
             setForRain = false;
         }

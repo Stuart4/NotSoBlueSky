@@ -24,24 +24,5 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:id="@+id/statusBlurb"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/itsRaining"
-            android:textSize="15sp"
-            android:drawableRight="@drawable/affirmativeblue"
-            android:id="@+id/affirmativeButton" android:layout_alignParentBottom="true" android:layout_alignParentLeft="true"
-            android:onClick="negativeButtonClicked"
-            android:layout_alignParentStart="true"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/itsNotRaining"
-            android:textSize="15sp"
-            android:drawableRight="@drawable/negativegray"
-            android:id="@+id/negativeButton"
-            android:layout_alignParentBottom="true" android:layout_alignRight="@+id/statusBlurb"
-            android:onClick="affirmativeButtonClicked"
-            android:layout_alignEnd="@+id/statusBlurb"/>
 
 </RelativeLayout>
