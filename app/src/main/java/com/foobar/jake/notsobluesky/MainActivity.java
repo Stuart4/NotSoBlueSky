@@ -65,6 +65,10 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void imageClicked(View view) throws IOException{
+        runRainStatus();
+    }
+
     private void showRainPicture(boolean isRain) {
         if (isRain) {
             image.setImageResource(R.drawable.raincloud);
@@ -144,16 +148,18 @@ class JsonGetter extends AsyncTask<URL, Void, Double>{
     }
 
     private double getPrecipProb(String s) {
-        double precipProb = -1.0;
+        double precipProb = 0.0;
         try {
             JSONObject obj = new JSONObject(s);
             obj = obj.getJSONObject("minutely");
             JSONArray data = obj.getJSONArray("data");
-            obj = data.getJSONObject(5);
-            precipProb = obj.getDouble("precipProbability");
+            for (int i = 0; i <= 5; i++) {
+                obj = data.getJSONObject(i);
+                precipProb += obj.getDouble("precipProbability");
+            }
         } catch (JSONException e) {
         }
-        return precipProb;
+        return precipProb / 5;
     }
 
     @Override
@@ -161,7 +167,7 @@ class JsonGetter extends AsyncTask<URL, Void, Double>{
         super.onPostExecute(d);
         boolean rain = false;
         Toast.makeText(activity, d.toString(), Toast.LENGTH_LONG).show();
-        if (d > 0.9) {
+        if (d > 4.5) {
             rain = true;
         }
         activity.updateRainStatus(rain);

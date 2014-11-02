@@ -17,7 +17,8 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:contentDescription="Sun and Dark Cloud"
-            android:layout_centerVertical="true" android:layout_centerHorizontal="true" />
+            android:layout_centerVertical="true" android:layout_centerHorizontal="true"
+            android:onClick="imageClicked"/>
     <TextView
         android:text="@string/notRain"
         android:textSize="50sp"
