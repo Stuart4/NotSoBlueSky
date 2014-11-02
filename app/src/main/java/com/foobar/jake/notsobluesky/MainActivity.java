@@ -2,12 +2,11 @@ package com.foobar.jake.notsobluesky;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,9 +15,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.concurrent.ExecutionException;
+
+import org.json.JSONObject;
+import org.json.JSONException;
+
 
 
 public class MainActivity extends Activity {
@@ -27,6 +35,8 @@ public class MainActivity extends Activity {
 	private ImageView image;
 	private Button affirmativeButton;
 	private Button negativeButton;
+    private String apikey;
+    private URL apiString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,8 @@ public class MainActivity extends Activity {
     	affirmativeButton = (Button) findViewById(R.id.affirmativeButton);
 	negativeButton = (Button) findViewById(R.id.negativeButton);
 	image = (ImageView) findViewById(R.id.imageView);
+    apikey = getString(R.string.forecastapi);
+    Toast.makeText(this,apikey, Toast.LENGTH_SHORT).show();
     }
 
 	public void updateRainStatus() throws IOException{
@@ -83,13 +95,19 @@ public class MainActivity extends Activity {
 		Location loc = lm.getLastKnownLocation(lm.getBestProvider(new android.location.Criteria() ,false));
 		double latitude = loc.getLatitude();
 		double longitude = loc.getLongitude();
-		Toast.makeText(this, city, Toast.LENGTH_SHORT).show();
+        setApiString(latitude, longitude);
+		Toast.makeText(this, latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
 
-		Random rnd = new Random();
-		int res = rnd.nextInt(2);
-		if (res == 1)
-			return true;
-		return false;
+        try {
+            String s = new JsonGetter().execute(apiString).get();
+            Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return false;
 	}
 
 
@@ -110,5 +128,32 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setApiString(double latitude, double longitude) {
+        try {
+            apiString = new URL(String.format("https://api.forecast.io/forecast/%s/%s,%s", apikey, latitude, longitude));
+        } catch (MalformedURLException e) {
+            Toast.makeText(this, "malformed api url", Toast.LENGTH_SHORT).show();
+            System.exit(-1);
+        }
+    }
+}
+
+class JsonGetter extends AsyncTask<URL, Void, String>{
+    @Override
+    protected String doInBackground(URL... url) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            InputStream is = url[0].openStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            int cp = 0;
+            while ((cp = br.read()) != -1) {
+                sb.append((char)cp);
+            }
+            is.close();
+        } catch (IOException e) {
+        }
+        return sb.toString();
     }
 }
