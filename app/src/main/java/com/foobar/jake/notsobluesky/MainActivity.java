@@ -147,9 +147,9 @@ class JsonGetter extends AsyncTask<URL, Void, String>{
         try {
             InputStream is = url[0].openStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            int cp = 0;
-            while ((cp = br.read()) != -1) {
-                sb.append((char)cp);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
             }
             is.close();
         } catch (IOException e) {
