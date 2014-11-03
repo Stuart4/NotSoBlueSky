@@ -10,6 +10,10 @@ import android.util.JsonReader;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
     private ImageView image;
     private String apikey;
     private URL apiString;
+    private Animation animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +49,26 @@ public class MainActivity extends Activity {
         contentBlurb = (TextView) findViewById(R.id.statusBlurb);
         image = (ImageView) findViewById(R.id.imageView);
         apikey = getString(R.string.forecastapi);
+        animation = AnimationUtils.loadAnimation(this, R.anim.rotate);
     }
 
     public void updateRainStatus(boolean rain) {
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                image.setAnimation(null);
+            }
+        });
+
         //GO HOME!!!
         if (setForRain == rain) {
             return;
@@ -67,7 +89,9 @@ public class MainActivity extends Activity {
 
     public void imageClicked(View view) throws IOException{
         runRainStatus();
+        image.startAnimation(animation);
     }
+
 
     private void showRainPicture(boolean isRain) {
         if (isRain) {
